@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/YOUR_USERNAME/YOUR_REPO.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t nextjs-jenkins-demo .'
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                sh '''
+                  docker rm -f nextjs-demo || true
+                  docker run -d -p 3000:3000 --name nextjs-demo nextjs-jenkins-demo
+                '''
+            }
+        }
+    }
+}
